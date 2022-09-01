@@ -3,6 +3,6 @@ import userRouter from "./userRouter.js";
 
 const router = new Router();
 
-router.use('/user', userRouter)
+router.use('/users', userRouter)
 
 export default router;

@@ -13,7 +13,7 @@ const signUp = async (req, res) => {
         }
 
         const data =  await UserService.signUp(email, password, name);
-        res.cookie('refreshToken', data.tokens.refreshToken, {maxAge: 30 * 24 * 60 * 60 * 1000, httpOnly: true})
+        data.tokens && res.cookie('refreshToken', data.tokens.refreshToken, {maxAge: 30 * 24 * 60 * 60 * 1000, httpOnly: true})
         return res.status(data.code).json(data);
     } catch (err) {
         return res.status(409).json({
