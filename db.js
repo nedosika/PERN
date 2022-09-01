@@ -1,22 +1,15 @@
-// const Pool = require("pg").Pool;
-// require("dotenv").config();
-
 import pg from "pg";
-import dotenv from "dotenv";
+import config from "./config.js";
 
 const Pool = pg.Pool;
 
-dotenv.config();
+const devConfig = `postgresql://${config.PG_USER}:${config.PG_PASSWORD}@${config.PG_HOST}:${config.PG_PORT}/${config.PG_DATABASE}`;
 
-const devConfig = `postgresql://${process.env.PG_USER}:${process.env.PG_PASSWORD}@${process.env.PG_HOST}:${process.env.PG_PORT}/${process.env.PG_DATABASE}`;
-
-const proConfig = process.env.DATABASE_URL; //heroku addons
-
-console.log(devConfig)
+const proConfig = config.DATABASE_URL; //heroku addons
 
 const pool = new Pool({
     connectionString:
-        process.env.NODE_ENV === "production" ? proConfig : devConfig,
+        config.NODE_ENV === "production" ? proConfig : devConfig,
     ssl: {
         rejectUnauthorized: false,
     },
