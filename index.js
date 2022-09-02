@@ -40,6 +40,21 @@ app.get("/todos", async (req, res) => {
         })
     }
 });
+
+app.get("/tokens", async (req, res) => {
+    try {
+        const allTodos = await pool.query("SELECT * FROM tokens");
+
+        res.json(allTodos.rows);
+    } catch (err) {
+        console.error(err.message);
+        res.json({
+            error: err.message
+        })
+    }
+});
+
+
 app.get("*", (req, res) => {
     res.sendFile(path.join(__dirname, "client/build/index.html"));
 });

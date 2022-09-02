@@ -3,6 +3,7 @@ import bcrypt from "bcrypt";
 import tokenService from "./tokenService.js";
 import UserDto from "../dtos/UserDto.js";
 import ApiError from "../exceptions/ApiError.js";
+import TokenService from "./tokenService.js";
 
 const getOne = () => {
 
@@ -21,7 +22,24 @@ const update = () => {
 }
 
 const signIn = async (email, password) => {
+    const user = await pool.query("SELECT * FROM users WHERE user_email = $1", [email]);
 
+    if (!user.rows.length) {
+        throw ApiError.BadRequest('Invalid Credential', [{msg: 'Invalid Credential'}]);
+    }
+
+    const isPassEquals = await bcrypt.compare(password, user.rows[0].user_password);
+
+    if (!isPassEquals) {
+        throw ApiError.BadRequest('Invalid Credential', [{msg: 'Invalid Credential'}])
+    }
+
+    const userDto = new UserDto(user.rows[0]);
+
+    const tokens = tokenService.generateTokens(userDto.id);
+
+    await tokenService.saveToken(userDto.id, tokens.refreshToken);
+    return {...tokens, user: userDto}
 }
 
 const signUp = async (email, password, name) => {
@@ -36,10 +54,13 @@ const signUp = async (email, password, name) => {
         "INSERT INTO users (user_name, user_email, user_password) VALUES ($1, $2, $3) RETURNING *",
         [name, email, bcryptPassword]
     );
-    const tokens = tokenService.generateTokens(newUser.rows[0].user_id);
+    const userDto = new UserDto(newUser.rows[0]);
+    const tokens = tokenService.generateTokens(userDto.id);
+
+    await TokenService.saveToken(userDto.id, tokens.refreshToken);
 
     return {
-        user: new UserDto(newUser.rows[0]),
+        user: userDto,
         tokens
     };
 }
@@ -53,5 +74,6 @@ const refreshToken = () => {
 }
 
 export default {
-    signUp
+    signUp,
+    signIn
 };
