@@ -5,7 +5,8 @@ import userController from "../controllers/userController.js";
 export const USER_PATHS = {
     signUp: '/signup',
     signIn: '/signin',
-    signOut: '/signout'
+    signOut: '/signout',
+    refresh: '/refresh'
 };
 
 const router = new Router();
@@ -25,6 +26,11 @@ router.post(
 router.post(
     USER_PATHS.signOut,
     userController.signOut
+)
+
+router.get(
+    USER_PATHS.refresh,
+    userController.refresh
 )
 
 export default router;

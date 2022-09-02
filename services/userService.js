@@ -3,7 +3,7 @@ import bcrypt from "bcrypt";
 import tokenService from "./tokenService.js";
 import UserDto from "../dtos/UserDto.js";
 import ApiError from "../exceptions/ApiError.js";
-import TokenService from "./tokenService.js";
+import config from "../config.js";
 
 const signIn = async (email, password) => {
     const user = await pool.query("SELECT * FROM users WHERE user_email = $1", [email]);
@@ -39,9 +39,9 @@ const signUp = async (email, password, name) => {
         [name, email, bcryptPassword]
     );
     const userDto = new UserDto(newUser.rows[0]);
-    const tokens = tokenService.generateTokens(userDto.id);
+    const tokens = tokenService.generateTokens(userDto);
 
-    await TokenService.saveToken(userDto.id, tokens.refreshToken);
+    await tokenService.saveToken(userDto, tokens.refreshToken);
 
     return {
         user: userDto,
@@ -50,12 +50,33 @@ const signUp = async (email, password, name) => {
 }
 
 const signOut = async (refreshToken) => {
-    await pool.query("DELETE FROM tokens WHERE refresh_token = $1", [refreshToken]);
+    const result = await pool.query("DELETE FROM tokens WHERE refresh_token = $1", [refreshToken]);
+    console.log(result)
     return {refreshToken};
+}
+
+const refresh = async (refreshToken) => {
+    if (!refreshToken) {
+        throw ApiError.UnauthorizedError();
+    }
+    const userData = tokenService.validateToken(refreshToken, config.JWT_REFRESH_SECRET_PHRASE);
+
+    const tokenFromDb = await tokenService.findToken(refreshToken);
+
+    if (!userData || !tokenFromDb) {
+        throw ApiError.UnauthorizedError();
+    }
+    const user = await pool.query("SELECT * FROM users WHERE user_id = $1", [userData.id]);
+    const userDto = new UserDto(user.rows[0]);
+    const tokens = tokenService.generateTokens(userDto);
+
+    await tokenService.saveToken(userDto, tokens.refreshToken);
+    return {...tokens, user: userDto}
 }
 
 export default {
     signUp,
     signIn,
-    signOut
+    signOut,
+    refresh
 };
