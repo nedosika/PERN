@@ -4,7 +4,8 @@ import userController from "../controllers/userController.js";
 
 export const USER_PATHS = {
     signUp: '/signup',
-    signIn: '/signin'
+    signIn: '/signin',
+    signOut: '/signout'
 };
 
 const router = new Router();
@@ -19,6 +20,11 @@ router.post(
 router.post(
     USER_PATHS.signIn,
     userController.signIn
+)
+
+router.post(
+    USER_PATHS.signOut,
+    userController.signOut
 )
 
 export default router;

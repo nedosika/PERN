@@ -13,14 +13,14 @@ const signUp = async (req, res, next) => {
 
         const {email, password, name} = req.body;
 
-        const userData = await UserService.signUp(email, password, name);
+        const data = await UserService.signUp(email, password, name);
 
-        userData.tokens && res.cookie('refreshToken', userData.tokens.refreshToken, {
+        data.tokens && res.cookie('refreshToken', data.tokens.refreshToken, {
             maxAge: 30 * 24 * 60 * 60 * 1000,
             httpOnly: true
         })
 
-        return new ApiResponse({response: res, data: userData});
+        return new ApiResponse({response: res, data});
     } catch (error) {
         next(error);
     }
@@ -29,9 +29,20 @@ const signUp = async (req, res, next) => {
 const signIn = async (req, res, next) => {
     try {
         const {email, password} = req.body;
-        const userData = await UserService.signIn(email, password);
-        res.cookie('refreshToken', userData.refreshToken, {maxAge: 30 * 24 * 60 * 60 * 1000, httpOnly: true})
-        return new ApiResponse({response: res, data: userData})
+        const data = await UserService.signIn(email, password);
+        res.cookie('refreshToken', data.refreshToken, {maxAge: 30 * 24 * 60 * 60 * 1000, httpOnly: true})
+        return new ApiResponse({response: res, data})
+    } catch (e) {
+        next(e);
+    }
+}
+
+const signOut = async (req, res, next) => {
+    try {
+        const {refreshToken} = req.cookies;
+        const data = await UserService.signOut(refreshToken);
+        res.clearCookie('refreshToken');
+        return new ApiResponse({response: res, data});
     } catch (e) {
         next(e);
     }
@@ -39,5 +50,6 @@ const signIn = async (req, res, next) => {
 
 export default {
     signUp,
-    signIn
+    signIn,
+    signOut
 }

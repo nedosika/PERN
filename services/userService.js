@@ -5,22 +5,6 @@ import UserDto from "../dtos/UserDto.js";
 import ApiError from "../exceptions/ApiError.js";
 import TokenService from "./tokenService.js";
 
-const getOne = () => {
-
-}
-
-const getOneByToken = () => {
-
-}
-
-const getOneByEmail = () => {
-
-}
-
-const update = () => {
-
-}
-
 const signIn = async (email, password) => {
     const user = await pool.query("SELECT * FROM users WHERE user_email = $1", [email]);
 
@@ -65,15 +49,13 @@ const signUp = async (email, password, name) => {
     };
 }
 
-const signOut = () => {
-
-}
-
-const refreshToken = () => {
-
+const signOut = async (refreshToken) => {
+    await pool.query("DELETE FROM tokens WHERE refresh_token = $1", [refreshToken]);
+    return {refreshToken};
 }
 
 export default {
     signUp,
-    signIn
+    signIn,
+    signOut
 };
