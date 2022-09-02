@@ -1,26 +1,29 @@
+import {validationResult} from 'express-validator';
 import UserService from "../services/userService.js";
+import ApiError from "../exceptions/ApiError.js";
+import ApiResponse from "../responses/ApiResponse.js";
 
-const signUp = async (req, res) => {
+
+const signUp = async (req, res, next) => {
     try {
-        const {email, password, name} = req.body;
+        const validation  = validationResult(req);
 
-        if (!(email && password)) {
-            return res.status(400).json({
-                message: "All input is required",
-                status: "Error",
-                code: 400
-            });
+        if(!validation.isEmpty()){
+            return next(ApiError.BadRequest('Validation error', validation.errors))
         }
 
-        const data =  await UserService.signUp(email, password, name);
-        data.tokens && res.cookie('refreshToken', data.tokens.refreshToken, {maxAge: 30 * 24 * 60 * 60 * 1000, httpOnly: true})
-        return res.status(data.code).json(data);
-    } catch (err) {
-        return res.status(409).json({
-            message: err.message,
-            status: "Error",
-            code: 409
-        });
+        const {email, password, name} = req.body;
+
+        const data = await UserService.signUp(email, password, name);
+
+        data.tokens && res.cookie('refreshToken', data.tokens.refreshToken, {
+            maxAge: 30 * 24 * 60 * 60 * 1000,
+            httpOnly: true
+        })
+
+        return new ApiResponse({response: res, data});
+    } catch (error) {
+        next(error);
     }
 };
 

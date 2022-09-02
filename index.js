@@ -7,6 +7,7 @@ import { fileURLToPath } from 'url';
 import pool from "./db.js";
 import config from "./config.js";
 import router from "./routes/index.js";
+import errorMiddleware from "./middlewares/errorMiddleware.js";
 
 const PORT = config.PORT || 5000;
 const __filename = fileURLToPath(import.meta.url);
@@ -20,6 +21,8 @@ app.use(cors({
     // credentials: true,
     // origin: process.env.CLIENT_URL
 }));
+app.use('/api', router);
+app.use(errorMiddleware);
 
 if (config.NODE_ENV === "production") {
     app.use(express.static(path.join(__dirname, "client/build")));
@@ -37,9 +40,6 @@ app.get("/todos", async (req, res) => {
         })
     }
 });
-
-app.use('/api', router);
-
 app.get("*", (req, res) => {
     res.sendFile(path.join(__dirname, "client/build/index.html"));
 });
