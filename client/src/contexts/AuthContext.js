@@ -1,6 +1,5 @@
 import { createContext, useContext, useState } from "react";
-//const API_URL = 'http://localhost:5000';
-const API_URL = '';
+import {CONFIG} from "../config";
 
 const auth = !!localStorage.getItem('accessToken');
 
@@ -13,7 +12,7 @@ export const AuthProvider = ({ children }) => {
   const [isLoading, setIsLoading] = useState(false);
 
   const signIn = ({ email, password }) => {
-    fetch(`${API_URL}/api/users/signin`, {
+    fetch(`${CONFIG.API_URL}/api/users/signin`, {
       method: "POST",
       credentials: "include",
       headers: {
@@ -33,7 +32,7 @@ export const AuthProvider = ({ children }) => {
   };
 
   const signOut = () => {
-    fetch(`${API_URL}/api/users/signout`, {
+    fetch(`${CONFIG.API_URL}/api/users/signout`, {
       method: "POST",
       credentials: "include",
       headers: {
@@ -49,7 +48,7 @@ export const AuthProvider = ({ children }) => {
 
   const checkAuth = () => {
     setIsLoading(true);
-    fetch(`${API_URL}/api/users/refresh`, {
+    fetch(`${CONFIG.API_URL}/api/users/refresh`, {
       method: "GET",
       credentials: "include",
     })
