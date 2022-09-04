@@ -1,14 +1,12 @@
 import { createContext, useContext, useState } from "react";
 import {CONFIG} from "../config";
 
-const auth = !!localStorage.getItem('accessToken');
-
 const AuthContext = createContext({});
 
 export const useAuthContext = () => useContext(AuthContext);
 
 export const AuthProvider = ({ children }) => {
-  const [isAuth, setIsAuth] = useState(auth);
+  const [isAuth, setIsAuth] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
   const signIn = ({ email, password }) => {

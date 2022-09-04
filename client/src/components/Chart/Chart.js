@@ -25,7 +25,7 @@ export default function Chart() {
 
     return (
         <React.Fragment>
-            <Typography component="h2" variant="h6" color="primary" gutterBottom>>Today</Typography>
+            <Typography component="h2" variant="h6" color="primary" gutterBottom>Today</Typography>
             <ResponsiveContainer>
                 <LineChart
                     data={data}
