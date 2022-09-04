@@ -20,9 +20,9 @@ const signIn = async (email, password) => {
 
     const userDto = new UserDto(user.rows[0]);
 
-    const tokens = tokenService.generateTokens(userDto.id);
+    const tokens = tokenService.generateTokens(userDto);
 
-    await tokenService.saveToken(userDto.id, tokens.refreshToken);
+    await tokenService.saveToken(userDto, tokens.refreshToken);
     return {...tokens, user: userDto}
 }
 
@@ -58,15 +58,18 @@ const refresh = async (refreshToken) => {
     if (!refreshToken) {
         throw ApiError.UnauthorizedError();
     }
-    const userData = tokenService.validateToken(refreshToken, config.JWT_REFRESH_SECRET_PHRASE);
+    const tokenData = tokenService.validateToken(refreshToken, config.JWT_REFRESH_SECRET_PHRASE);
+    console.log(tokenData)
 
     const tokenFromDb = await tokenService.findToken(refreshToken);
 
-    if (!userData || !tokenFromDb) {
+    if (!tokenData || !tokenFromDb) {
         throw ApiError.UnauthorizedError();
     }
-    const user = await pool.query("SELECT * FROM users WHERE user_id = $1", [userData.id]);
-    const userDto = new UserDto(user.rows[0]);
+    const userData = await pool.query("SELECT * FROM users WHERE user_id = $1", [tokenData.id]);
+
+    console.log(userData)
+    const userDto = new UserDto(userData.rows[0]);
     const tokens = tokenService.generateTokens(userDto);
 
     await tokenService.saveToken(userDto, tokens.refreshToken);

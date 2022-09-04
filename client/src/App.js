@@ -4,10 +4,20 @@ import SignUp from "./components/SignUp";
 import Dashboard from "./components/Dashboard";
 import ProtectedRoute from "./components/ProtectedRoute";
 import { useAuthContext } from "./contexts/AuthContext";
+import {useEffect} from "react";
 
 function App() {
-  const { isAuth } = useAuthContext();
-  console.log(isAuth);
+  const { isAuth, checkAuth, isLoading } = useAuthContext();
+
+  useEffect(() => {
+    if (localStorage.getItem("accessToken")) {
+      checkAuth();
+    }
+  }, []);
+
+  if(isLoading)
+      return <div>Loading...</div>
+
   return (
     <BrowserRouter>
       <Routes>
@@ -23,7 +33,7 @@ function App() {
         <Route
           element={
             <ProtectedRoute isAllowed={!isAuth} redirectPath="/">
-              <SignIn/>
+              <SignIn />
             </ProtectedRoute>
           }
           path="/signin"

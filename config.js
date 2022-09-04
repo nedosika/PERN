@@ -13,5 +13,6 @@ export default {
     DATABASE_URL: process.env.DATABASE_URL,
     JWT_ACCESS_SECRET_PHRASE: process.env.JWT_ACCESS_SECRET_PHRASE,
     JWT_REFRESH_SECRET_PHRASE: process.env.JWT_REFRESH_SECRET_PHRASE,
-    CLIENT_URL: process.env.CLIENT_URL
+    CLIENT_URL: process.env.CLIENT_URL,
+    API_URL: process.env.API_URL
 }
