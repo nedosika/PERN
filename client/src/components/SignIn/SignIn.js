@@ -12,12 +12,18 @@ import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import Copyright from "../Copyright";
+import {useAuthContext} from "../../contexts/AuthContext";
 
 export default function SignIn() {
+  const {signIn} = useAuthContext();
   const handleSubmit = (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
     console.log({
+      email: data.get("email"),
+      password: data.get("password"),
+    });
+    signIn({
       email: data.get("email"),
       password: data.get("password"),
     });

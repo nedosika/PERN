@@ -9,6 +9,7 @@ import PeopleIcon from '@mui/icons-material/People';
 import BarChartIcon from '@mui/icons-material/BarChart';
 import LayersIcon from '@mui/icons-material/Layers';
 import AssignmentIcon from '@mui/icons-material/Assignment';
+import {useAuthContext} from "../../contexts/AuthContext";
 
 export const mainListItems = (
     <React.Fragment>
@@ -45,28 +46,31 @@ export const mainListItems = (
     </React.Fragment>
 );
 
-export const secondaryListItems = (
-    <React.Fragment>
-        <ListSubheader component="div" inset>
-            Saved reports
-        </ListSubheader>
-        <ListItemButton>
-            <ListItemIcon>
-                <AssignmentIcon />
-            </ListItemIcon>
-            <ListItemText primary="Current month" />
-        </ListItemButton>
-        <ListItemButton>
-            <ListItemIcon>
-                <AssignmentIcon />
-            </ListItemIcon>
-            <ListItemText primary="Last quarter" />
-        </ListItemButton>
-        <ListItemButton>
-            <ListItemIcon>
-                <AssignmentIcon />
-            </ListItemIcon>
-            <ListItemText primary="Year-end sale" />
-        </ListItemButton>
-    </React.Fragment>
-);
+export const SecondaryListItems = () => {
+    const {signOut} = useAuthContext();
+    return (
+        <>
+            <ListSubheader component="div" inset>
+                Saved reports
+            </ListSubheader>
+            <ListItemButton>
+                <ListItemIcon>
+                    <AssignmentIcon />
+                </ListItemIcon>
+                <ListItemText primary="Current month" />
+            </ListItemButton>
+            <ListItemButton>
+                <ListItemIcon>
+                    <AssignmentIcon />
+                </ListItemIcon>
+                <ListItemText primary="Last quarter" />
+            </ListItemButton>
+            <ListItemButton onClick={signOut}>
+                <ListItemIcon>
+                    <AssignmentIcon />
+                </ListItemIcon>
+                <ListItemText primary="Logout" />
+            </ListItemButton>
+        </>
+    );
+}

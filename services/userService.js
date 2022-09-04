@@ -50,9 +50,8 @@ const signUp = async (email, password, name) => {
 }
 
 const signOut = async (refreshToken) => {
-    const result = await pool.query("DELETE FROM tokens WHERE refresh_token = $1", [refreshToken]);
-    console.log(result)
-    return {refreshToken};
+    const tokenData = await pool.query("DELETE FROM tokens WHERE refresh_token = $1", [refreshToken]);
+    return tokenData.rowCount ? {refreshToken} : {};
 }
 
 const refresh = async (refreshToken) => {
