@@ -2,12 +2,12 @@ import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 import SignIn from "./components/SignIn";
 import SignUp from "./components/SignUp";
 import Dashboard from "./components/Dashboard";
-import ProtectedRoute from "./components/ProtectedRoute";
+import ProtectedRoutes from "./components/ProtectedRoutes";
 import { useAuthContext } from "./contexts/AuthContext";
-import {useEffect} from "react";
+import { useEffect } from "react";
 
 function App() {
-  const { isAuth, checkAuth, isLoading } = useAuthContext();
+  const { isAuth, checkAuth, isCheckingAuth } = useAuthContext();
 
   useEffect(() => {
     if (localStorage.getItem("accessToken")) {
@@ -15,31 +15,25 @@ function App() {
     }
   }, []);
 
-  if(isLoading)
-      return <div>Loading...</div>
+  if (isCheckingAuth) return <div>Loading...</div>;
 
   return (
     <BrowserRouter>
       <Routes>
-        {/*<Route path="/" element={<Dashboard/>}/>*/}
         <Route
           element={
-            <ProtectedRoute isAllowed={isAuth} redirectPath="signin">
-              <Dashboard />
-            </ProtectedRoute>
+            <ProtectedRoutes isAllowed={isAuth} redirectPath="/signin" />
           }
-          path="/"
-        />
+        >
+          <Route path="/" element={<Dashboard />} />
+        </Route>
         <Route
-          element={
-            <ProtectedRoute isAllowed={!isAuth} redirectPath="/">
-              <SignIn />
-            </ProtectedRoute>
-          }
-          path="/signin"
-        />
-        <Route path="/signup" element={<SignUp />} />
-        <Route path="*" element={<Navigate to="/signin" />} />
+          element={<ProtectedRoutes isAllowed={!isAuth} redirectPath="/" />}
+        >
+          <Route path="/signin" element={<SignIn />} />
+          <Route path="/signup" element={<SignUp />} />
+        </Route>
+        <Route path="*" element={<Navigate to="/" />} />
       </Routes>
     </BrowserRouter>
   );

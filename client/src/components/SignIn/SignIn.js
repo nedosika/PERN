@@ -5,17 +5,19 @@ import CssBaseline from "@mui/material/CssBaseline";
 import TextField from "@mui/material/TextField";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Checkbox from "@mui/material/Checkbox";
-import Link from "@mui/material/Link";
+import { NavLink } from "react-router-dom";
 import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import Copyright from "../Copyright";
-import {useAuthContext} from "../../contexts/AuthContext";
+import { useAuthContext } from "../../contexts/AuthContext";
+import Link from "@mui/material/Link";
+import LoadingButton from "@mui/lab/LoadingButton/LoadingButton";
 
 export default function SignIn() {
-  const {signIn} = useAuthContext();
+  const { signIn, isLoading } = useAuthContext();
   const handleSubmit = (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
@@ -71,14 +73,15 @@ export default function SignIn() {
             control={<Checkbox value="remember" color="primary" />}
             label="Remember me"
           />
-          <Button
+          <LoadingButton
+            loading={isLoading}
             type="submit"
             fullWidth
             variant="contained"
             sx={{ mt: 3, mb: 2 }}
           >
             Sign In
-          </Button>
+          </LoadingButton>
           <Grid container>
             <Grid item xs>
               <Link href="#" variant="body2">
@@ -86,9 +89,9 @@ export default function SignIn() {
               </Link>
             </Grid>
             <Grid item>
-              <Link href="signup" variant="body2">
+              <NavLink to="/signup" variant="body2">
                 {"Don't have an account? Sign Up"}
-              </Link>
+              </NavLink>
             </Grid>
           </Grid>
         </Box>
