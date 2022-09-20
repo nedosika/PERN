@@ -59,7 +59,6 @@ const refresh = async (refreshToken) => {
         throw ApiError.UnauthorizedError();
     }
     const tokenData = tokenService.validateToken(refreshToken, config.JWT_REFRESH_SECRET_PHRASE);
-    console.log(tokenData)
 
     const tokenFromDb = await tokenService.findToken(refreshToken);
 
@@ -68,7 +67,6 @@ const refresh = async (refreshToken) => {
     }
     const userData = await pool.query("SELECT * FROM users WHERE user_id = $1", [tokenData.id]);
 
-    console.log(userData)
     const userDto = new UserDto(userData.rows[0]);
     const tokens = tokenService.generateTokens(userDto);
 

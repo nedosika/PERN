@@ -49,17 +49,17 @@ export const AuthProvider = ({ children }) => {
       .then((response) => response.json())
       .then((result) => {
         console.log(result);
-        if(result.errors.length) {
+        if (result.errors.length) {
           setErrors(errors);
         } else {
-            localStorage.setItem("accessToken", result.data.accessToken);
-            setIsAuth(true);
+          localStorage.setItem("accessToken", result.data.accessToken);
+          setIsAuth(true);
         }
       })
-        .catch(error => {
-          console.log(error.message)
-          setErrors([{msg: error.message}])
-        })
+      .catch((error) => {
+        console.log(error.message);
+        setErrors([{ msg: error.message }]);
+      })
       .finally(() => setIsLoading(false));
   };
 
@@ -77,7 +77,7 @@ export const AuthProvider = ({ children }) => {
         localStorage.removeItem("accessToken");
         setIsAuth(false);
       })
-  .finally(() => setIsLoading(false));
+      .finally(() => setIsLoading(false));
   };
 
   const checkAuth = () => {
@@ -97,7 +97,16 @@ export const AuthProvider = ({ children }) => {
 
   return (
     <AuthContext.Provider
-      value={{ isAuth, isCheckingAuth, signIn, signUp, signOut, checkAuth, isLoading, errors }}
+      value={{
+        isAuth,
+        isCheckingAuth,
+        signIn,
+        signUp,
+        signOut,
+        checkAuth,
+        isLoading,
+        errors,
+      }}
     >
       {children}
     </AuthContext.Provider>
