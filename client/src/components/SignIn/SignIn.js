@@ -1,6 +1,5 @@
 import * as React from "react";
 import Avatar from "@mui/material/Avatar";
-import Button from "@mui/material/Button";
 import CssBaseline from "@mui/material/CssBaseline";
 import TextField from "@mui/material/TextField";
 import FormControlLabel from "@mui/material/FormControlLabel";
@@ -16,19 +15,20 @@ import { useAuthContext } from "../../contexts/AuthContext";
 import Link from "@mui/material/Link";
 import LoadingButton from "@mui/lab/LoadingButton/LoadingButton";
 
+
 export default function SignIn() {
   const { signIn, isLoading } = useAuthContext();
   const handleSubmit = (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
-    console.log({
-      email: data.get("email"),
-      password: data.get("password"),
-    });
+    // console.log({
+    //   email: data.get("email"),
+    //   password: data.get("password"),
+    // });
     signIn({
       email: data.get("email"),
       password: data.get("password"),
-    });
+    })
   };
 
   return (
@@ -69,10 +69,10 @@ export default function SignIn() {
             id="password"
             autoComplete="current-password"
           />
-          <FormControlLabel
-            control={<Checkbox value="remember" color="primary" />}
-            label="Remember me"
-          />
+          {/*<FormControlLabel*/}
+          {/*  control={<Checkbox value="remember" color="primary" />}*/}
+          {/*  label="Remember me"*/}
+          {/*/>*/}
           <LoadingButton
             loading={isLoading}
             type="submit"
@@ -82,18 +82,18 @@ export default function SignIn() {
           >
             Sign In
           </LoadingButton>
-          <Grid container>
-            <Grid item xs>
-              <Link href="#" variant="body2">
-                Forgot password?
-              </Link>
-            </Grid>
-            <Grid item>
-              <NavLink to="/signup" variant="body2">
-                {"Don't have an account? Sign Up"}
-              </NavLink>
-            </Grid>
-          </Grid>
+          {/*<Grid container>*/}
+          {/*  <Grid item xs>*/}
+          {/*    <Link href="#" variant="body2">*/}
+          {/*      Forgot password?*/}
+          {/*    </Link>*/}
+          {/*  </Grid>*/}
+          {/*  <Grid item>*/}
+          {/*    <NavLink to="/signup" variant="body2">*/}
+          {/*      {"Don't have an account? Sign Up"}*/}
+          {/*    </NavLink>*/}
+          {/*  </Grid>*/}
+          {/*</Grid>*/}
         </Box>
       </Box>
       <Copyright sx={{ mt: 8, mb: 4 }} />

@@ -5,6 +5,7 @@ import Dashboard from "./components/Dashboard";
 import ProtectedRoutes from "./components/ProtectedRoutes";
 import { useAuthContext } from "./contexts/AuthContext";
 import { useEffect } from "react";
+import Tasks from "./components/Tasks";
 
 function App() {
   const { isAuth, checkAuth, isCheckingAuth } = useAuthContext();
@@ -26,12 +27,14 @@ function App() {
           }
         >
           <Route path="/" element={<Dashboard />} />
+          <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/tasks" element={<Tasks />} />
         </Route>
         <Route
           element={<ProtectedRoutes isAllowed={!isAuth} redirectPath="/" />}
         >
           <Route path="/signin" element={<SignIn />} />
-          <Route path="/signup" element={<SignUp />} />
+          {/*<Route path="/signup" element={<SignUp />} />*/}
         </Route>
         <Route path="*" element={<Navigate to="/" />} />
       </Routes>

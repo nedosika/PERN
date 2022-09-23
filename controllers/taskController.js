@@ -4,15 +4,9 @@ import {validationResult} from "express-validator";
 import ApiError from "../exceptions/ApiError.js";
 import Task from "../helpers/Task.js";
 
-const tasks = [];
-
 const getAllTasks = async (req, res, next) => {
     try {
-        //const data = await taskService.getAll();
-
-        return new ApiResponse({
-            response: res, data: tasks
-        });
+        return new ApiResponse({response: res, data: taskService.getAll()});
     } catch (error) {
         next(error);
     }
@@ -50,19 +44,16 @@ const createTask = async (req, res, next) => {
 
         const {name, api, authorization, sitemap = [], timeout = 0, titleRegExp} = req.body;
 
-        //const data = await taskService.create({name: name || api, timeout, titleRegExp});
-
-        tasks.push(new Task({
-            //id: data.rows[0].id,
-            progress: 0,
-            authorization,
+        const result = await taskService.create({
+            name: name || api,
             api,
             timeout,
             titleRegExp,
-            sitemap
-        }))
+            sitemap,
+            authorization
+        });
 
-        return new ApiResponse({response: res, data: tasks});
+        return new ApiResponse({response: res, data: result.rows[0]});
     } catch (error) {
         next(error);
     }

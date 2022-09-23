@@ -1,27 +1,26 @@
 import {updatePost} from "./updatePost.js";
 import taskService from "../services/taskService.js";
+import {wsServer} from "../index.js";
 
-export default class Task{
+export default class Task {
     id
     api
+    status = 'start'
     sitemap
     authorization
     timeout
-    progress
+    progress = 0
     titleRegExp
-    errors
-    posts
+    errors = []
+    posts = []
 
-    constructor({id, api, sitemap = [], authorization, timeout = 0, progress = 0, titleRegExp}) {
+    constructor({id, api, sitemap = [], authorization, timeout = 0, titleRegExp}) {
         this.id = id;
         this.api = api;
-        this.posts = [];
-        this.errors = [];
         this.sitemap = sitemap;
         this.timeout = timeout;
-        this.progress = progress;
-        this.authorization = authorization;
         this.titleRegExp = titleRegExp;
+        this.authorization = authorization;
 
         sitemap.reduce((p, url, index, arr) => p.then((prev) => {
             const {api, titleRegExp, authorization} = this;
@@ -42,11 +41,29 @@ export default class Task{
                     return {error: error.message}
                 })
                 .finally(() => {
+                    wsServer.clients.forEach((client) => {
+                        client.send(JSON.stringify({
+                            id: this.id,
+                            status: this.status,
+                            progress: index,
+                            errors: this.errors,
+                            addedPosts: this.posts.length
+                        }));
+                    });
                     this.progress = index;
                 })
         }), Promise.resolve()).finally(() => {
             console.log('complete');
             taskService.complete(this);
+            wsServer.clients.forEach((client) => {
+                client.send(JSON.stringify({
+                    id: this.id,
+                    status: 'complete',
+                    progress: this.progress,
+                    errors: this.errors,
+                    addedPosts: this.posts.length
+                }));
+            });
         })
 
         return this;

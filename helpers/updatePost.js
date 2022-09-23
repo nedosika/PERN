@@ -14,7 +14,7 @@ export const updatePost = async ({
                                      isStrongSearch = false,
                                      url
 }) => {
-    console.log(authorization);
+    //console.log(authorization);
     console.log(url)
     //await delay(5000)
     const slug = getSlug(url);
@@ -22,30 +22,30 @@ export const updatePost = async ({
     const categories = getCategories(url);
     //console.log(categories)
     const title = await fetchTitleFromPost({url, regexp: titleRegExp, index: regExpIndex});
-    console.log(title)
+    //console.log(title)
     const id = await searchPostId({api, search: title, isStrongSearch});
     console.log(id)
 
-    return {
-        slug,
-        title,
-        id,
-        categories
-    }
-    //
-    // const data = JSON.stringify(Object.assign(
-    //     {slug: slug.replace('.html', '')},
-    //     categories && {
-    //         categories: await addCategories({api, categories, authorization})
-    //     }
-    // ))
-    //
-    // return axios(`${api}/${id}`, {
-    //     method: 'PUT',
-    //     data,
-    //     headers: {
-    //         'Content-Type': 'application/json',
-    //         'Authorization': 'Basic ' + authorization
-    //     }
-    // }).then(({data}) => data)
+    // return {
+    //     slug,
+    //     title,
+    //     id,
+    //     categories
+    // }
+
+    const data = JSON.stringify(Object.assign(
+        {slug: slug.replace('.html', '')},
+        // categories && {
+        //     categories: await addCategories({api, categories, authorization})
+        // }
+    ))
+
+    return axios(`${api}/${id}`, {
+        method: 'PUT',
+        data,
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Basic ' + authorization
+        }
+    }).then(({data}) => data)
 }
