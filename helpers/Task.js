@@ -5,6 +5,7 @@ import {wsServer} from "../index.js";
 export default class Task {
     id
     api
+    name
     status = 'start'
     sitemap
     authorization
@@ -14,9 +15,10 @@ export default class Task {
     errors = []
     posts = []
 
-    constructor({id, api, sitemap = [], authorization, timeout = 0, titleRegExp}) {
+    constructor({id, api, name, sitemap = [], authorization, timeout = 0, titleRegExp}) {
         this.id = id;
         this.api = api;
+        this.name = name;
         this.sitemap = sitemap;
         this.timeout = timeout;
         this.titleRegExp = titleRegExp;
@@ -43,25 +45,33 @@ export default class Task {
                 .finally(() => {
                     wsServer.clients.forEach((client) => {
                         client.send(JSON.stringify({
-                            id: this.id,
-                            status: this.status,
-                            progress: index,
-                            errors: this.errors,
-                            addedPosts: this.posts.length
+                            event: 'update',
+                            task: {
+                                id,
+                                name,
+                                status: this.status,
+                                progress: index,
+                                errors: this.errors,
+                                addedPosts: this.posts.length
+                            }
                         }));
                     });
                     this.progress = index;
                 })
         }), Promise.resolve()).finally(() => {
-            console.log('complete');
+            this.status = 'complete'
             taskService.complete(this);
             wsServer.clients.forEach((client) => {
                 client.send(JSON.stringify({
-                    id: this.id,
-                    status: 'complete',
-                    progress: this.progress,
-                    errors: this.errors,
-                    addedPosts: this.posts.length
+                    event: 'update',
+                    task: {
+                        id,
+                        name,
+                        status: this.status,
+                        progress: this.progress,
+                        errors: this.errors,
+                        addedPosts: this.posts.length
+                    }
                 }));
             });
         })

@@ -1,42 +1,51 @@
 import React from 'react';
 import Layout from "../Layout";
-import Container from "@mui/material/Container";
-import {TableContainer} from "@mui/material";
-import Table from "@mui/material/Table";
+import {Container, Fab, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow} from "@mui/material";
+import AddIcon from '@mui/icons-material/Add';
+import {useTasksContext} from "../../contexts/TasksContext";
 
 const Tasks = () => {
+    const {tasks} = useTasksContext();
     return (
         <Layout title='Tasks'>
             <Container maxWidth="lg" sx={{mt: 4, mb: 4}}>
                 <TableContainer component={Paper}>
-                    <Table sx={{ minWidth: 650 }} size="small" aria-label="a dense table">
+                    <Table sx={{minWidth: 650}} size="small" aria-label="a dense table">
                         <TableHead>
                             <TableRow>
-                                <TableCell>Dessert (100g serving)</TableCell>
-                                <TableCell align="right">Calories</TableCell>
-                                <TableCell align="right">Fat&nbsp;(g)</TableCell>
-                                <TableCell align="right">Carbs&nbsp;(g)</TableCell>
-                                <TableCell align="right">Protein&nbsp;(g)</TableCell>
+                                <TableCell>Name of site</TableCell>
+                                <TableCell>Status</TableCell>
+                                <TableCell>Progress</TableCell>
+                                <TableCell>Actions</TableCell>
                             </TableRow>
                         </TableHead>
                         <TableBody>
-                            {rows.map((row) => (
+                            {tasks.map((task) => (
                                 <TableRow
-                                    key={row.name}
-                                    sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+                                    key={task.id}
+                                    sx={{'&:last-child td, &:last-child th': {border: 0}}}
                                 >
                                     <TableCell component="th" scope="row">
-                                        {row.name}
+                                        {task.name}
                                     </TableCell>
-                                    <TableCell align="right">{row.calories}</TableCell>
-                                    <TableCell align="right">{row.fat}</TableCell>
-                                    <TableCell align="right">{row.carbs}</TableCell>
-                                    <TableCell align="right">{row.protein}</TableCell>
+                                    <TableCell>{task.status}</TableCell>
+                                    <TableCell>{task.progress}</TableCell>
+                                    <TableCell></TableCell>
                                 </TableRow>
                             ))}
                         </TableBody>
                     </Table>
                 </TableContainer>
+                <Fab
+                    sx={{
+                        position: 'absolute',
+                        bottom: 16,
+                        right: 16
+                    }}
+                    color='primary'
+                >
+                    <AddIcon/>
+                </Fab>
             </Container>
         </Layout>
     );
