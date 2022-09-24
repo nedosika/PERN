@@ -5,7 +5,7 @@ import AddIcon from '@mui/icons-material/Add';
 import {useTasksContext} from "../../contexts/TasksContext";
 
 const Tasks = () => {
-    const {tasks} = useTasksContext();
+    const {tasks, toggleDialog} = useTasksContext();
     return (
         <Layout title='Tasks'>
             <Container maxWidth="lg" sx={{mt: 4, mb: 4}}>
@@ -43,6 +43,7 @@ const Tasks = () => {
                         right: 16
                     }}
                     color='primary'
+                    onClick={toggleDialog}
                 >
                     <AddIcon/>
                 </Fab>
