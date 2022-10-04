@@ -26,13 +26,6 @@ export const updatePost = async ({
     const id = await searchPostId({api, search: title, isStrongSearch});
     console.log(id)
 
-    // return {
-    //     slug,
-    //     title,
-    //     id,
-    //     categories
-    // }
-
     const data = JSON.stringify(Object.assign(
         {slug: slug.replace('.html', '')},
         // categories && {
@@ -40,7 +33,7 @@ export const updatePost = async ({
         // }
     ))
 
-    return axios(`${api}/${id}`, {
+    return axios(`${api}/posts/${id}`, {
         method: 'PUT',
         data,
         headers: {

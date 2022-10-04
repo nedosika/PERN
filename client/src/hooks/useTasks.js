@@ -5,6 +5,8 @@ import {CONFIG} from "../config";
 const useTasks = () => {
     const [tasks, setTasks] = useState([]);
 
+    console.log(tasks)
+
     const {message} = useWebsocket({url: CONFIG.WSS_URL, onOpen: () => console.log('Websocket opened')});
 
     useEffect(() => {
@@ -13,7 +15,7 @@ const useTasks = () => {
                 const index = tasks.findIndex((task) => task.id === message.task.id);
                 return index === -1
                     ? [...tasks, message.task]
-                    : [...tasks.slice(0, index), message.task, ...tasks.slice(index + 1)]
+                    : [...tasks.slice(0, index), {...tasks[index], ...message.task}, ...tasks.slice(index + 1)]
             })
         }
     }, [message]);

@@ -3,9 +3,12 @@ import Layout from "../Layout";
 import {Container, Fab, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow} from "@mui/material";
 import AddIcon from '@mui/icons-material/Add';
 import {useTasksContext} from "../../contexts/TasksContext";
+import useDialogContext from "../../contexts/DialogContext";
 
 const Tasks = () => {
-    const {tasks, toggleDialog} = useTasksContext();
+    const {tasks} = useTasksContext();
+    const {toggleDialog} = useDialogContext();
+
     return (
         <Layout title='Tasks'>
             <Container maxWidth="lg" sx={{mt: 4, mb: 4}}>
@@ -29,7 +32,7 @@ const Tasks = () => {
                                         {task.name}
                                     </TableCell>
                                     <TableCell>{task.status}</TableCell>
-                                    <TableCell>{task.progress}</TableCell>
+                                    <TableCell>{task.progress && `${task.progress} %`}</TableCell>
                                     <TableCell></TableCell>
                                 </TableRow>
                             ))}

@@ -8,13 +8,7 @@ import { useEffect } from "react";
 import Tasks from "./components/Tasks";
 
 function App() {
-  const { isAuth, checkAuth, isCheckingAuth } = useAuthContext();
-
-  useEffect(() => {
-    if (localStorage.getItem("accessToken")) {
-      checkAuth();
-    }
-  }, []);
+  const { isAuth, isCheckingAuth } = useAuthContext();
 
   if (isCheckingAuth) return <div>Loading...</div>;
 

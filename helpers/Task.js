@@ -50,13 +50,13 @@ export default class Task {
                                 id,
                                 name,
                                 status: this.status,
-                                progress: index,
+                                progress: Math.ceil(index * 100 / sitemap.length),
                                 errors: this.errors,
                                 addedPosts: this.posts.length
                             }
                         }));
                     });
-                    this.progress = index;
+                    this.progress = Math.ceil(index * 100 / sitemap.length);
                 })
         }), Promise.resolve()).finally(() => {
             this.status = 'complete'

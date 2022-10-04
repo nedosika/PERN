@@ -1,6 +1,7 @@
 import {createContext, useContext, useState} from "react";
 import useTasks from "../hooks/useTasks";
-import CreateTaskDialog from "../components/CreateTaskDialog";
+import {encode as base64_encode} from 'base-64';
+import {CONFIG} from "../config";
 
 export const TASK_FIELDS = {
     wordpressUrl: 'wordpressApiUrl',
@@ -49,14 +50,33 @@ export const useTasksContext = () => useContext(TasksContext);
 const TasksProvider = ({children}) => {
     const [task, setTask] = useState(initialState.task);
     const {tasks, setTasks} = useTasks();
-    const [isOpenDialog, setDialog]= useState(false);
 
-    console.log(task);
-
-    const toggleDialog = () => setDialog((isOpen) => !isOpen);
-
-    const createTask = ({}) => {
-
+    const createTask = () => {
+        fetch(`${CONFIG.API_URL}/api/tasks/`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+                // 'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: JSON.stringify({
+                api: `${task[TASK_FIELDS.wordpressUrl]}/wp-json/wp/v2`,
+                authorization: base64_encode(`${task[TASK_FIELDS.username]}:${task[TASK_FIELDS.password]}`),
+                sitemap: task[TASK_FIELDS.urls],
+                arraysIndex: task[TASK_FIELDS.arraysIndex],
+                isAddCategories: task[TASK_FIELDS.isAddCategories],
+                isStrongSearch: task[TASK_FIELDS.isStrongSearch],
+                tagTitle: task[TASK_FIELDS.tagTitle],
+                timeout: task[TASK_FIELDS.timeout]
+            })
+        })
+            .then(() => {
+                console.log('task added')
+            })
+            .catch((error) => {
+                console.log(error)
+            })
+            .finally()
+        console.log(task);
     }
 
     const removeTasks = (tasks) => {
@@ -69,16 +89,14 @@ const TasksProvider = ({children}) => {
 
     return <TasksContext.Provider value={{
         task,
-        setTask,
+        setTask: (field) =>
+            setTask((prevState) => Object.assign({}, prevState, field)),
         tasks,
         createTask,
         removeTasks,
         restartTask,
-        isOpenDialog,
-        toggleDialog
     }}>
         {children}
-        <CreateTaskDialog/>
     </TasksContext.Provider>
 }
 

@@ -1,4 +1,4 @@
-import {createContext, useContext, useState} from "react";
+import {createContext, useContext, useEffect, useState} from "react";
 import {CONFIG} from "../config";
 import {useSnackbar} from "notistack";
 
@@ -12,6 +12,12 @@ export const AuthProvider = ({children}) => {
     const [isCheckingAuth, setIsCheckingAuth] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
     const [errors, setErrors] = useState([]);
+
+    useEffect(() => {
+        if (localStorage.getItem("accessToken")) {
+            checkAuth();
+        }
+    }, []);
 
     const signIn = ({email, password}) => {
         setIsLoading(true);
