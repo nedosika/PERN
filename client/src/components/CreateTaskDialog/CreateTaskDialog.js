@@ -1,4 +1,7 @@
 import * as React from 'react';
+
+import Box from "@mui/material/Box";
+import Slide from '@mui/material/Slide';
 import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
 import AppBar from '@mui/material/AppBar';
@@ -6,16 +9,14 @@ import Toolbar from '@mui/material/Toolbar';
 import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
 import CloseIcon from '@mui/icons-material/Close';
-import Slide from '@mui/material/Slide';
 
-import {useTasksContext} from "../../contexts/TasksContext";
-import Accordion from "../Accordion/Accordion";
 import SiteMap from "./SiteMap";
-import Box from "@mui/material/Box";
 import PostTitle from "./PostTitle";
 import Categories from "./Categories";
+import Accordion from "../Accordion/Accordion";
 import WordpressSettings from "./WordpressSettings";
-import useDialogContext from "../../contexts/DialogContext";
+import {useTasksContext} from "../../contexts/TasksContext";
+import {useDialogContext} from "../../contexts/DialogContext";
 
 const Transition = React.forwardRef((props, ref) =>
     <Slide direction="up" ref={ref} {...props} />

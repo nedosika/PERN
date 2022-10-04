@@ -6,7 +6,7 @@ const AuthContext = createContext({});
 
 export const useAuthContext = () => useContext(AuthContext);
 
-export const AuthProvider = ({children}) => {
+const AuthProvider = ({children}) => {
     const {enqueueSnackbar} = useSnackbar();
     const [isAuth, setIsAuth] = useState(false);
     const [isCheckingAuth, setIsCheckingAuth] = useState(false);
@@ -128,3 +128,5 @@ export const AuthProvider = ({children}) => {
         </AuthContext.Provider>
     );
 };
+
+export default AuthProvider;

@@ -1,9 +1,21 @@
 import React from 'react';
-import Layout from "../Layout";
-import {Container, Fab, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow} from "@mui/material";
+
+import {
+    Fab,
+    Paper,
+    Table,
+    TableRow,
+    TableHead,
+    TableBody,
+    TableCell,
+    Container,
+    TableContainer,
+} from "@mui/material";
 import AddIcon from '@mui/icons-material/Add';
+
+import Layout from "../../components/Layout";
 import {useTasksContext} from "../../contexts/TasksContext";
-import useDialogContext from "../../contexts/DialogContext";
+import {useDialogContext} from "../../contexts/DialogContext";
 
 const Tasks = () => {
     const {tasks} = useTasksContext();

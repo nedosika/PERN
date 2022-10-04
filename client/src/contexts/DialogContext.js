@@ -3,7 +3,7 @@ import CreateTaskDialog from "../components/CreateTaskDialog";
 
 const DialogContext = createContext({});
 
-const useDialogContext = () => useContext(DialogContext);
+export const useDialogContext = () => useContext(DialogContext);
 
 export const DialogProvider = ({children}) => {
     const [isOpen, setDialog] = useState(false);
@@ -18,5 +18,5 @@ export const DialogProvider = ({children}) => {
     </DialogContext.Provider>
 }
 
-export default useDialogContext;
+export default DialogProvider;
 

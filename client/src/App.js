@@ -1,39 +1,10 @@
-import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
-import SignIn from "./components/SignIn";
-import SignUp from "./components/SignUp";
-import Dashboard from "./components/Dashboard";
-import ProtectedRoutes from "./components/ProtectedRoutes";
-import { useAuthContext } from "./contexts/AuthContext";
-import { useEffect } from "react";
-import Tasks from "./components/Tasks";
+import AppRouter from "./components/AppRouter";
+import AllProviders from "./components/AllProviders";
 
-function App() {
-  const { isAuth, isCheckingAuth } = useAuthContext();
+const App = () =>
+    <AllProviders>
+        <AppRouter/>
+    </AllProviders>
 
-  if (isCheckingAuth) return <div>Loading...</div>;
-
-  return (
-    <BrowserRouter>
-      <Routes>
-        <Route
-          element={
-            <ProtectedRoutes isAllowed={isAuth} redirectPath="/signin" />
-          }
-        >
-          <Route path="/" element={<Dashboard />} />
-          <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/tasks" element={<Tasks />} />
-        </Route>
-        <Route
-          element={<ProtectedRoutes isAllowed={!isAuth} redirectPath="/" />}
-        >
-          <Route path="/signin" element={<SignIn />} />
-          {/*<Route path="/signup" element={<SignUp />} />*/}
-        </Route>
-        <Route path="*" element={<Navigate to="/" />} />
-      </Routes>
-    </BrowserRouter>
-  );
-}
 
 export default App;
