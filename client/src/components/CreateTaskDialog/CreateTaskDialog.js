@@ -16,7 +16,7 @@ import Categories from "./Categories";
 import Accordion from "../Accordion/Accordion";
 import WordpressSettings from "./WordpressSettings";
 import {useTasksContext} from "../../contexts/TasksContext";
-import {useDialogContext} from "../../contexts/DialogContext";
+import {DIALOGS, useDialogContext} from "../../contexts/DialogContext";
 
 const Transition = React.forwardRef((props, ref) =>
     <Slide direction="up" ref={ref} {...props} />
@@ -24,17 +24,19 @@ const Transition = React.forwardRef((props, ref) =>
 
 export default function CreateTaskDialog() {
     const {createTask} = useTasksContext();
-    const {isOpen, toggleDialog} = useDialogContext();
+    const {dialogs: {[DIALOGS.createTaskDialog]: isOpen}, toggleDialog} = useDialogContext();
 
-    const handleCreateTask = () => {
-        createTask();
-    }
+    const closeDialog = () =>
+        toggleDialog(DIALOGS.createTaskDialog);
+
+    const handleCreateTask = () =>
+        createTask().then(closeDialog)
 
     return (
         <Dialog
             fullScreen
             open={isOpen}
-            onClose={toggleDialog}
+            onClose={closeDialog}
             TransitionComponent={Transition}
         >
             <AppBar sx={{position: 'relative'}}>
@@ -42,7 +44,7 @@ export default function CreateTaskDialog() {
                     <IconButton
                         edge="start"
                         color="inherit"
-                        onClick={toggleDialog}
+                        onClick={closeDialog}
                     >
                         <CloseIcon/>
                     </IconButton>

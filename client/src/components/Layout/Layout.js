@@ -14,6 +14,8 @@ import MenuIcon from "@mui/icons-material/Menu";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import NotificationsIcon from "@mui/icons-material/Notifications";
 import {MainListItems, SecondaryListItems} from "../ListItems";
+import {useTasksContext} from "../../contexts/TasksContext";
+import useTasks from "../../hooks/useTasks";
 
 const drawerWidth = 240;
 
@@ -63,9 +65,9 @@ const Drawer = styled(MuiDrawer, {
 
 const Layout = ({title, children}) => {
     const [open, setOpen] = React.useState(true);
-    const toggleDrawer = () => {
-        setOpen(!open);
-    };
+    const {completed} = useTasks();
+
+    const toggleDrawer = () => setOpen(!open);
 
     return (
         <Box sx={{ display: "flex" }}>
@@ -98,7 +100,7 @@ const Layout = ({title, children}) => {
                         {title}
                     </Typography>
                     <IconButton color="inherit">
-                        <Badge badgeContent={4} color="secondary">
+                        <Badge badgeContent={completed} color="secondary">
                             <NotificationsIcon />
                         </Badge>
                     </IconButton>

@@ -4,8 +4,7 @@ import {CONFIG} from "../config";
 
 const useTasks = () => {
     const [tasks, setTasks] = useState([]);
-
-    console.log(tasks)
+    const [completed, setCompleted] = useState(0);
 
     const {message} = useWebsocket({url: CONFIG.WSS_URL, onOpen: () => console.log('Websocket opened')});
 
@@ -16,7 +15,12 @@ const useTasks = () => {
                 return index === -1
                     ? [...tasks, message.task]
                     : [...tasks.slice(0, index), {...tasks[index], ...message.task}, ...tasks.slice(index + 1)]
-            })
+            });
+        }
+        if(message?.task.status === 'complete'){
+            console.log('Task complete');
+            console.log(message.task);
+            setCompleted((completed) => completed + 1);
         }
     }, [message]);
 
@@ -34,6 +38,7 @@ const useTasks = () => {
 
     return {
         tasks,
+        completed,
         setTasks
     }
 }

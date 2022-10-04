@@ -1,5 +1,4 @@
 import {createContext, useContext, useState} from "react";
-import useTasks from "../hooks/useTasks";
 import {encode as base64_encode} from 'base-64';
 import {CONFIG} from "../config";
 
@@ -49,9 +48,8 @@ export const useTasksContext = () => useContext(TasksContext);
 
 const TasksProvider = ({children}) => {
     const [task, setTask] = useState(initialState.task);
-    const {tasks, setTasks} = useTasks();
 
-    const createTask = () => {
+    const createTask = () =>
         fetch(`${CONFIG.API_URL}/api/tasks/`, {
             method: 'POST',
             headers: {
@@ -75,9 +73,6 @@ const TasksProvider = ({children}) => {
             .catch((error) => {
                 console.log(error)
             })
-            .finally()
-        console.log(task);
-    }
 
     const removeTasks = (tasks) => {
 
@@ -91,7 +86,6 @@ const TasksProvider = ({children}) => {
         task,
         setTask: (field) =>
             setTask((prevState) => Object.assign({}, prevState, field)),
-        tasks,
         createTask,
         removeTasks,
         restartTask,

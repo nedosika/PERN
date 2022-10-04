@@ -39,10 +39,11 @@ export default class Task {
                 })
                 .catch((error) => {
                     console.log(error.message);
-                    this.errors.push(error.message);
+                    this.errors.push({url, error: error.message});
                     return {error: error.message}
                 })
                 .finally(() => {
+                    this.progress = Math.ceil((index + 1) * 100 / sitemap.length);
                     wsServer.clients.forEach((client) => {
                         client.send(JSON.stringify({
                             event: 'update',
@@ -50,13 +51,12 @@ export default class Task {
                                 id,
                                 name,
                                 status: this.status,
-                                progress: Math.ceil(index * 100 / sitemap.length),
+                                progress: this.progress,
                                 errors: this.errors,
-                                addedPosts: this.posts.length
+                                addedPosts: this.posts
                             }
                         }));
                     });
-                    this.progress = Math.ceil(index * 100 / sitemap.length);
                 })
         }), Promise.resolve()).finally(() => {
             this.status = 'complete'
@@ -70,7 +70,7 @@ export default class Task {
                         status: this.status,
                         progress: this.progress,
                         errors: this.errors,
-                        addedPosts: this.posts.length
+                        addedPosts: this.posts
                     }
                 }));
             });
