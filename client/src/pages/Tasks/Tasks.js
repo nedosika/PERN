@@ -30,8 +30,9 @@ const Tasks = () => {
     const openCreateTaskDialog = () =>
         toggleDialog(DIALOGS.createTaskDialog);
 
-    const openReportDialog = () =>
-        toggleDialog(DIALOGS.reportDialog);
+    const openReportDialog = (id) => () => {
+        toggleDialog(DIALOGS.reportDialog, {id});
+    }
 
     console.log(tasks)
 
@@ -66,7 +67,7 @@ const Tasks = () => {
                                         <IconButton size="small">
                                             <EditIcon fontSize="inherit"/>
                                         </IconButton>
-                                        <IconButton size="small" onClick={openReportDialog}>
+                                        <IconButton size="small" onClick={openReportDialog(task.id)}>
                                             <AssessmentIcon fontSize="inherit"/>
                                         </IconButton>
                                         <IconButton size="small">

@@ -59,19 +59,12 @@ export default class Task {
                     });
                 })
         }), Promise.resolve()).finally(() => {
-            this.status = 'complete'
+            this.status = 'complete';
             taskService.complete(this);
             wsServer.clients.forEach((client) => {
                 client.send(JSON.stringify({
                     event: 'update',
-                    task: {
-                        id,
-                        name,
-                        status: this.status,
-                        progress: this.progress,
-                        errors: this.errors,
-                        addedPosts: this.posts
-                    }
+                    task: this
                 }));
             });
         })

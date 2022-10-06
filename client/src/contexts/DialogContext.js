@@ -15,15 +15,17 @@ export const DialogProvider = ({children}) => {
     const [dialogs, setDialogs] = useState({
         [DIALOGS.createTaskDialog]: false,
         [DIALOGS.reportDialog]: false
-    })
+    });
+    const [options, setOptions] = useState({});
 
-    const toggleDialog = (dialog) =>
+    const toggleDialog = (dialog, options) =>
+    {
+        setOptions((prevState) => ({...prevState, [dialog]: options}));
         setDialogs((prevState) => ({
             ...prevState,
             [dialog]: !prevState[dialog]
         }));
-
-    //const toggleDialog = () => setDialog((isOpen) => !isOpen);
+    }
 
     return <DialogContext.Provider value={{
         dialogs,
@@ -31,7 +33,7 @@ export const DialogProvider = ({children}) => {
     }}>
         {children}
         <CreateTaskDialog/>
-        <ReportDialog/>
+        <ReportDialog {...options[DIALOGS.reportDialog]}/>
     </DialogContext.Provider>
 }
 

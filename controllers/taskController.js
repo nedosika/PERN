@@ -2,11 +2,12 @@ import ApiResponse from "../responses/ApiResponse.js";
 import taskService from "../services/taskService.js";
 import {validationResult} from "express-validator";
 import ApiError from "../exceptions/ApiError.js";
-import Task from "../helpers/Task.js";
 
 const getAllTasks = async (req, res, next) => {
     try {
-        return new ApiResponse({response: res, data: taskService.getAll()});
+        const {rows: data} = await taskService.getAll();
+
+        return new ApiResponse({response: res, data});
     } catch (error) {
         next(error);
     }
@@ -53,11 +54,10 @@ const createTask = async (req, res, next) => {
             authorization
         });
 
-        return new ApiResponse({response: res, data: result.rows[0]});
+        return new ApiResponse({response: res, data: result});
     } catch (error) {
         next(error);
     }
-    return new ApiResponse({response: res, data});
 }
 
 const removeTask = async (req, res, next) => {

@@ -1,6 +1,7 @@
 import {createContext, useContext, useEffect, useState} from "react";
 import {CONFIG} from "../config";
 import {useSnackbar} from "notistack";
+import {useLocation, useNavigate} from "react-router-dom";
 
 const AuthContext = createContext({});
 
@@ -19,7 +20,7 @@ const AuthProvider = ({children}) => {
         }
     }, []);
 
-    const signIn = ({email, password}) => {
+    const signIn = ({email, password}, redirect) => {
         setIsLoading(true);
         return fetch(`${CONFIG.API_URL}/api/users/signin`, {
             method: "POST",
@@ -34,10 +35,10 @@ const AuthProvider = ({children}) => {
         })
             .then((response) => response.json())
             .then((result) => {
-                console.log(result);
                 if (result.status === 201) {
                     localStorage.setItem("accessToken", result.data.accessToken);
                     setIsAuth(true);
+                    redirect();
                 }
                 if (result.status === 400) {
                     enqueueSnackbar(result.message, {variant: 'error'});

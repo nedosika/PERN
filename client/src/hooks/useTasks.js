@@ -2,10 +2,9 @@ import {useEffect, useState} from "react";
 import useWebsocket from "./useWebsocket";
 import {CONFIG} from "../config";
 
-const useTasks = () => {
+const useTasks = (id) => {
     const [tasks, setTasks] = useState([]);
     const [completed, setCompleted] = useState(0);
-
     const {message} = useWebsocket({url: CONFIG.WSS_URL, onOpen: () => console.log('Websocket opened')});
 
     useEffect(() => {
@@ -37,6 +36,7 @@ const useTasks = () => {
     }, [])
 
     return {
+        task: id && tasks.find((task) => task.id === id),
         tasks,
         completed,
         setTasks

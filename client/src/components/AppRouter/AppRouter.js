@@ -6,6 +6,7 @@ import ProtectedRoutes from "../ProtectedRoutes";
 import Dashboard from "../../pages/Dashboard";
 import Tasks from "../../pages/Tasks";
 import SignIn from "../../pages/SignIn";
+import SignUp from "../../pages/SignUp";
 
 const AppRouter = () => {
     const { isAuth, isCheckingAuth } = useAuthContext();
@@ -28,6 +29,7 @@ const AppRouter = () => {
                     element={<ProtectedRoutes isAllowed={!isAuth} redirectPath="/" />}
                 >
                     <Route path="/signin" element={<SignIn />} />
+                    <Route path="/signup" element={<SignUp />} />
                 </Route>
                 <Route path="*" element={<Navigate to="/" />} />
             </Routes>
