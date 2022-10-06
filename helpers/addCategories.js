@@ -14,6 +14,9 @@ const addCategory = ({api, name, parent, authorization}) => {
 }
 
 const addCategories = async ({api, categories, authorization}) => {
+    if(!categories)
+        return;
+
     const result = [];
 
     await categories.reduce(
@@ -25,14 +28,14 @@ const addCategories = async ({api, categories, authorization}) => {
                     : await addCategory({api, name: category, parent: parentId, authorization});
                 result.push(resultCategory.id);
                 return resultCategory.id;
-            } catch (error){
+            } catch (error) {
                 console.log(error.message);
             }
         }),
         Promise.resolve()
     );
 
-    return result;
+    return {categories: result.slice(-1)}
 }
 
 export default addCategories;

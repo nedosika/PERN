@@ -15,7 +15,7 @@ export const updatePost = async ({
                                      url
 }) => {
     //console.log(authorization);
-    console.log(url)
+    //console.log(url)
     //await delay(5000)
     const slug = getSlug(url);
     //console.log(slug)
@@ -24,14 +24,12 @@ export const updatePost = async ({
     const title = await fetchTitleFromPost({url, regexp: titleRegExp, index: regExpIndex});
     //console.log(title)
     const id = await searchPostId({api, search: title, isStrongSearch});
-    console.log(id)
-
+    //console.log(id)
     const data = JSON.stringify(Object.assign(
         {slug: slug.replace('.html', '')},
-        // categories && {
-        //     categories: await addCategories({api, categories, authorization})
-        // }
+        await addCategories({api, categories, authorization})
     ))
+    //console.log(data);
 
     return axios(`${api}/posts/${id}`, {
         method: 'PUT',
