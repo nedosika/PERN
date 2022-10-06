@@ -34,8 +34,6 @@ const Tasks = () => {
         toggleDialog(DIALOGS.reportDialog, {id});
     }
 
-    console.log(tasks)
-
     return (
         <Layout title='Tasks'>
             <Container maxWidth="lg" sx={{mt: 4, mb: 4}}>

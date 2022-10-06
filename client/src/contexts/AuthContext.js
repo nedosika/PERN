@@ -1,7 +1,6 @@
 import {createContext, useContext, useEffect, useState} from "react";
 import {CONFIG} from "../config";
 import {useSnackbar} from "notistack";
-import {useLocation, useNavigate} from "react-router-dom";
 
 const AuthContext = createContext({});
 
@@ -10,13 +9,15 @@ export const useAuthContext = () => useContext(AuthContext);
 const AuthProvider = ({children}) => {
     const {enqueueSnackbar} = useSnackbar();
     const [isAuth, setIsAuth] = useState(false);
-    const [isCheckingAuth, setIsCheckingAuth] = useState(false);
+    const [isCheckingAuth, setIsCheckingAuth] = useState(true);
     const [isLoading, setIsLoading] = useState(false);
     const [errors, setErrors] = useState([]);
 
     useEffect(() => {
         if (localStorage.getItem("accessToken")) {
             checkAuth();
+        } else {
+            setIsCheckingAuth(false);
         }
     }, []);
 
