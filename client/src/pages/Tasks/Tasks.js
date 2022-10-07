@@ -9,11 +9,11 @@ import {
     TableBody,
     TableCell,
     Container,
-    TableContainer,
+    TableContainer, Tooltip, CircularProgress, Backdrop,
 } from "@mui/material";
 import AddIcon from '@mui/icons-material/Add';
 import DeleteIcon from '@mui/icons-material/Delete';
-import EditIcon from '@mui/icons-material/Edit';
+import ErrorIcon from '@mui/icons-material/Error';
 import AssessmentIcon from '@mui/icons-material/Assessment';
 import RestartAltIcon from '@mui/icons-material/RestartAlt';
 import CancelIcon from '@mui/icons-material/Cancel';
@@ -23,8 +23,11 @@ import Layout from "../../components/Layout";
 import {DIALOGS, useDialogContext} from "../../contexts/DialogContext";
 import useTasks from "../../hooks/useTasks";
 
+const formatDate = (date) =>
+    `${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()} ${date.getHours()}:${date.getMinutes()}`;
+
 const Tasks = () => {
-    const {tasks} = useTasks();
+    const {tasks, isLoading} = useTasks();
     const {toggleDialog} = useDialogContext();
 
     const openCreateTaskDialog = () =>
@@ -34,52 +37,78 @@ const Tasks = () => {
         toggleDialog(DIALOGS.reportDialog, {id});
     }
 
+    const openErrorsDialog = (id) => () => {
+        toggleDialog(DIALOGS.errorsDialog, {id});
+    }
+
     return (
         <Layout title='Tasks'>
             <Container maxWidth="lg" sx={{mt: 4, mb: 4}}>
-                <TableContainer component={Paper}>
-                    <Table sx={{minWidth: 650}} size="small">
-                        <TableHead>
-                            <TableRow>
-                                <TableCell>Name of site</TableCell>
-                                <TableCell>Status</TableCell>
-                                <TableCell>Progress</TableCell>
-                                <TableCell/>
-                            </TableRow>
-                        </TableHead>
-                        <TableBody>
-                            {tasks.map((task) => (
-                                <TableRow
-                                    key={task.id}
-                                    sx={{'&:last-child td, &:last-child th': {border: 0}}}
-                                >
-                                    <TableCell component="th" scope="row">
-                                        {task.name}
-                                    </TableCell>
-                                    <TableCell>{task.status}</TableCell>
-                                    <TableCell>{task.progress && `${task.progress} %`}</TableCell>
-                                    <TableCell align='right'>
-                                        <IconButton size="small">
-                                            <DeleteIcon fontSize="inherit"/>
-                                        </IconButton>
-                                        <IconButton size="small">
-                                            <EditIcon fontSize="inherit"/>
-                                        </IconButton>
-                                        <IconButton size="small" onClick={openReportDialog(task.id)}>
-                                            <AssessmentIcon fontSize="inherit"/>
-                                        </IconButton>
-                                        <IconButton size="small">
-                                            <RestartAltIcon fontSize="inherit"/>
-                                        </IconButton>
-                                        <IconButton size="small">
-                                            <CancelIcon fontSize="inherit"/>
-                                        </IconButton>
-                                    </TableCell>
-                                </TableRow>
-                            ))}
-                        </TableBody>
-                    </Table>
-                </TableContainer>
+                {
+                    isLoading
+                        ? <Backdrop
+                            sx={{color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1}}
+                            open
+                        >
+                            <CircularProgress color="inherit"/>
+                        </Backdrop>
+                        :
+                        <TableContainer component={Paper}>
+                            <Table sx={{minWidth: 650}} size="small">
+                                <TableHead>
+                                    <TableRow>
+                                        <TableCell>Date</TableCell>
+                                        <TableCell>Name of site</TableCell>
+                                        <TableCell>Status</TableCell>
+                                        <TableCell>End Date</TableCell>
+                                        <TableCell>Progress</TableCell>
+                                        <TableCell/>
+                                    </TableRow>
+                                </TableHead>
+                                <TableBody>
+                                    {tasks.map((task) => (
+                                        <TableRow
+                                            key={task.id}
+                                            sx={{'&:last-child td, &:last-child th': {border: 0}}}
+                                        >
+                                            <TableCell>{formatDate(new Date(Date.parse(task.start)))}</TableCell>
+                                            <TableCell>{task.name}</TableCell>
+                                            <TableCell>{task.status}</TableCell>
+                                            <TableCell>{formatDate(new Date(Date.parse(task.stop)))}</TableCell>
+                                            <TableCell>{task.progress && `${task.progress} %`}</TableCell>
+                                            <TableCell align='right'>
+                                                <Tooltip title="Added posts" arrow>
+                                                    <IconButton size="small" onClick={openReportDialog(task.id)}>
+                                                        <AssessmentIcon fontSize="inherit"/>
+                                                    </IconButton>
+                                                </Tooltip>
+                                                <Tooltip title="Errors" arrow>
+                                                    <IconButton size="small" onClick={openErrorsDialog(task.id)}>
+                                                        <ErrorIcon fontSize="inherit"/>
+                                                    </IconButton>
+                                                </Tooltip>
+                                                <Tooltip title="Restart task" arrow>
+                                                    <IconButton size="small">
+                                                        <RestartAltIcon fontSize="inherit"/>
+                                                    </IconButton>
+                                                </Tooltip>
+                                                <Tooltip title="Cancel task" arrow>
+                                                    <IconButton size="small">
+                                                        <CancelIcon fontSize="inherit"/>
+                                                    </IconButton>
+                                                </Tooltip>
+                                                <Tooltip title="Remove task" arrow>
+                                                    <IconButton size="small">
+                                                        <DeleteIcon fontSize="inherit"/>
+                                                    </IconButton>
+                                                </Tooltip>
+                                            </TableCell>
+                                        </TableRow>
+                                    ))}
+                                </TableBody>
+                            </Table>
+                        </TableContainer>
+                }
                 <Fab
                     sx={{
                         position: 'absolute',

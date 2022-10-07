@@ -1,10 +1,12 @@
 import {createContext, useContext, useState} from "react";
 import CreateTaskDialog from "../components/CreateTaskDialog";
 import ReportDialog from "../components/ReportDialog";
+import ErrorsDialog from "../components/ErrorsDialog";
 
 export const DIALOGS = {
     createTaskDialog: 'createTaskDialog',
-    reportDialog: 'reportDialog'
+    reportDialog: 'reportDialog',
+    errorsDialog: 'errorsDialog'
 }
 
 const DialogContext = createContext({});
@@ -14,7 +16,8 @@ export const useDialogContext = () => useContext(DialogContext);
 export const DialogProvider = ({children}) => {
     const [dialogs, setDialogs] = useState({
         [DIALOGS.createTaskDialog]: false,
-        [DIALOGS.reportDialog]: false
+        [DIALOGS.reportDialog]: false,
+        [DIALOGS.errorsDialog]: false
     });
     const [options, setOptions] = useState({});
 
@@ -34,6 +37,8 @@ export const DialogProvider = ({children}) => {
         {children}
         <CreateTaskDialog/>
         <ReportDialog {...options[DIALOGS.reportDialog]}/>
+        <ErrorsDialog {...options[DIALOGS.errorsDialog]}/>
+
     </DialogContext.Provider>
 }
 

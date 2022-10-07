@@ -37,7 +37,7 @@ const initialState = {
         [TASK_FIELDS.timeout]: 0,
         [TASK_FIELDS.logs]: [],
         [TASK_FIELDS.urls]: [],
-        [TASK_FIELDS.isStrongSearch]: true,
+        [TASK_FIELDS.isStrongSearch]: false,
         [TASK_FIELDS.isLoading]: false
     }
 }

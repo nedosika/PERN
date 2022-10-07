@@ -4,6 +4,7 @@ import {CONFIG} from "../config";
 
 const useTasks = (id) => {
     const [tasks, setTasks] = useState([]);
+    const [isLoading, setLoading] = useState(true);
     const [completed, setCompleted] = useState(0);
     const {message} = useWebsocket({url: CONFIG.WSS_URL, onOpen: () => console.log('Websocket opened')});
 
@@ -24,6 +25,7 @@ const useTasks = (id) => {
     }, [message]);
 
     useEffect(() => {
+        setLoading(true);
         fetch(`${CONFIG.API_URL}/api/tasks/`, {
             credentials: "include",
             headers: {
@@ -32,12 +34,16 @@ const useTasks = (id) => {
         })
             .then((response) => response.json())
             .then(({data}) => setTasks(data))
-            .catch((error) => console.log(error.message));
-    }, [])
+            .catch((error) => console.log(error.message))
+            .finally(() => setLoading(false));
+    }, []);
+
+    const task = id && tasks.find((task) => task.id === id)
 
     return {
-        task: id && tasks.find((task) => task.id === id),
+        task,
         tasks,
+        isLoading,
         completed,
         setTasks
     }

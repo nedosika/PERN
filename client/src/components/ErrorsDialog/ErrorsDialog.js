@@ -17,53 +17,28 @@ const Transition = React.forwardRef((props, ref) =>
 );
 
 const columns = [
-    { field: 'id', headerName: 'ID', width: 60 },
     {
-        field: 'link',
+        field: 'url',
         headerName: 'Url',
-        width: 240,
+        width: 450,
         editable: true
     },
     {
-        field: 'slug',
-        headerName: 'Slug',
-        width: 200,
+        field: 'error',
+        headerName: 'Error',
+        width: 400,
         editable: true
-    },
-    {
-        field: 'title',
-        headerName: 'Title',
-        width: 200,
-        valueGetter: (params) =>
-            `${params.row.title.rendered || ''}`,
-    },
-    {
-        field: 'categories',
-        headerName: 'Categories',
-        width: 10,
-    },
-    {
-        field: 'tags',
-        headerName: 'Tags',
-        width: 90
-    },
+    }
 ];
 
-const ReportDialog = ({id}) => {
-    const {dialogs: {[DIALOGS.reportDialog]: isOpen}, toggleDialog} = useDialogContext();
+const ErrorsDialog = ({id}) => {
+    const {dialogs: {[DIALOGS.errorsDialog]: isOpen}, toggleDialog} = useDialogContext();
     const {task} = useTasks(id);
 
-    const posts = task && JSON.parse(task.posts) || [];
-    console.log(posts)
     const errors = task && JSON.parse(task.errors) || [];
-    console.log(errors)
-    const titleError = errors.filter(({error}) => error === 'Title not found');
-    const slugError = errors.filter(({error}) => error === 'Slug not found');
-    const postError = errors.filter(({error}) => error === 'Post not found');
-    const otherError = errors.filter(({error}) => error !== 'Title not found' && error !== 'Slug not found' && error !== 'Post not found');
 
     const closeDialog = () =>
-        toggleDialog(DIALOGS.reportDialog)
+        toggleDialog(DIALOGS.errorsDialog)
 
     return (
         <Dialog
@@ -82,7 +57,7 @@ const ReportDialog = ({id}) => {
                         <CloseIcon/>
                     </IconButton>
                     <Typography sx={{ml: 2, flex: 1}} variant="h6" component="div">
-                        Added posts in {task?.name}
+                        Errors in {task?.name}
                     </Typography>
                     <Button autoFocus color="inherit" onClick={closeDialog}>
                         Close
@@ -91,16 +66,16 @@ const ReportDialog = ({id}) => {
             </AppBar>
             <Box sx={{ height: 400, width: '100%', padding: '10px 10px 0 10px' }}>
                 <DataGrid
-                    rows={posts}
+                    rows={errors}
                     columns={columns}
                     pageSize={10}
                     rowsPerPageOptions={[5, 10, 15]}
-                    getRowId={(row) => row.slug}
+                    getRowId={(row) => row.url}
                 />
             </Box>
         </Dialog>
     );
 };
 
-export default ReportDialog;
+export default ErrorsDialog;
 

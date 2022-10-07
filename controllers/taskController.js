@@ -23,12 +23,10 @@ const getTaskById = async (req, res, next) => {
 
         const {id} = req.body;
 
-        const data = await taskService.getById(id);
+        const {rows} = await taskService.getById(id);
 
         return new ApiResponse({
-            response: res, data: {
-                tasks: data.rows
-            }
+            response: res, data: rows[0]
         });
     } catch (error) {
         next(error);
