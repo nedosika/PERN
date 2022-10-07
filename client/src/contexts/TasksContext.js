@@ -1,6 +1,7 @@
-import {createContext, useContext, useState} from "react";
+import {createContext, useContext, useEffect, useState} from "react";
 import {encode as base64_encode} from 'base-64';
 import {CONFIG} from "../config";
+import useWebsocket from "../hooks/useWebsocket";
 
 export const TASK_FIELDS = {
     wordpressUrl: 'wordpressApiUrl',
@@ -19,6 +20,7 @@ export const TASK_FIELDS = {
     urls: 'urls',
     isStrongSearch: 'isStrongSearch'
 }
+
 const initialState = {
     // [STATE_FIELDS.wordpressUrl]: 'https://wottakk.ru',
     // [STATE_FIELDS.username]: 'admin55',
@@ -48,6 +50,40 @@ export const useTasksContext = () => useContext(TasksContext);
 
 const TasksProvider = ({children}) => {
     const [task, setTask] = useState(initialState.task);
+    const [tasks, setTasks] = useState([]);
+    const [isLoading, setLoading] = useState(true);
+    const [completed, setCompleted] = useState(0);
+    const {message} = useWebsocket({url: CONFIG.WSS_URL, onOpen: () => console.log('Websocket opened')});
+
+    useEffect(() => {
+        if (message?.event === 'update') {
+            setTasks((tasks) => {
+                const index = tasks.findIndex((task) => task.id === message.task.id);
+                return index === -1
+                    ? [...tasks, message.task]
+                    : [...tasks.slice(0, index), {...tasks[index], ...message.task}, ...tasks.slice(index + 1)]
+            });
+        }
+        if(message?.task.status === 'complete'){
+            console.log('Task complete');
+            console.log(message.task);
+            setCompleted((completed) => completed + 1);
+        }
+    }, [message]);
+
+    useEffect(() => {
+        setLoading(true);
+        fetch(`${CONFIG.API_URL}/api/tasks/`, {
+            credentials: "include",
+            headers: {
+                "Content-Type": "application/json;charset=utf-8",
+            }
+        })
+            .then((response) => response.json())
+            .then(({data}) => setTasks(data))
+            .catch((error) => console.log(error.message))
+            .finally(() => setLoading(false));
+    }, []);
 
     const createTask = () =>
         fetch(`${CONFIG.API_URL}/api/tasks/`, {
@@ -74,8 +110,16 @@ const TasksProvider = ({children}) => {
                 console.log(error)
             })
 
-    const removeTasks = (tasks) => {
-
+    const removeTask = (id) => {
+        fetch(`${CONFIG.API_URL}/api/tasks/${id}`, {
+            method: 'DELETE'
+        })
+            .then(() => {
+                console.log('task deleted')
+            })
+            .catch((error) => {
+                console.log(error)
+            })
     }
 
     const restartTask = (id) => {
@@ -84,10 +128,13 @@ const TasksProvider = ({children}) => {
 
     return <TasksContext.Provider value={{
         task,
+        tasks,
         setTask: (field) =>
             setTask((prevState) => Object.assign({}, prevState, field)),
+        isLoading,
+        completed,
         createTask,
-        removeTasks,
+        removeTask,
         restartTask,
     }}>
         {children}

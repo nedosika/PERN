@@ -54,16 +54,9 @@ const ReportDialog = ({id}) => {
     const {task} = useTasks(id);
 
     const posts = task && JSON.parse(task.posts) || [];
-    console.log(posts)
-    const errors = task && JSON.parse(task.errors) || [];
-    console.log(errors)
-    const titleError = errors.filter(({error}) => error === 'Title not found');
-    const slugError = errors.filter(({error}) => error === 'Slug not found');
-    const postError = errors.filter(({error}) => error === 'Post not found');
-    const otherError = errors.filter(({error}) => error !== 'Title not found' && error !== 'Slug not found' && error !== 'Post not found');
 
     const closeDialog = () =>
-        toggleDialog(DIALOGS.reportDialog)
+        toggleDialog(DIALOGS.reportDialog);
 
     return (
         <Dialog

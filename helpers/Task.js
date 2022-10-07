@@ -6,6 +6,8 @@ export default class Task {
     id
     api
     name
+    start
+    stop
     status = 'start'
     sitemap
     authorization
@@ -19,6 +21,7 @@ export default class Task {
         this.id = id;
         this.api = api;
         this.name = name;
+        this.start = new Date(),
         this.sitemap = sitemap;
         this.timeout = timeout;
         this.titleRegExp = titleRegExp;
@@ -50,10 +53,11 @@ export default class Task {
                             task: {
                                 id,
                                 name,
+                                start: this.start,
                                 status: this.status,
                                 progress: this.progress,
-                                errors: this.errors,
-                                addedPosts: this.posts
+                                errors: JSON.stringify(this.errors),
+                                posts: this.posts
                             }
                         }));
                     });
@@ -64,7 +68,13 @@ export default class Task {
             wsServer.clients.forEach((client) => {
                 client.send(JSON.stringify({
                     event: 'update',
-                    task: this
+                    task: {
+                        ...this,
+                        stop: new Date(),
+                        errors: JSON.stringify(this.errors),
+                        posts: JSON.stringify(this.posts),
+                        sitemap: JSON.stringify(this.sitemap)
+                    }
                 }));
             });
         })

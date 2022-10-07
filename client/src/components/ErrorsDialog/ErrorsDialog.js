@@ -35,6 +35,8 @@ const ErrorsDialog = ({id}) => {
     const {dialogs: {[DIALOGS.errorsDialog]: isOpen}, toggleDialog} = useDialogContext();
     const {task} = useTasks(id);
 
+    console.log(task)
+
     const errors = task && JSON.parse(task.errors) || [];
 
     const closeDialog = () =>

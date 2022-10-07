@@ -11,7 +11,7 @@ const getById = (id) =>
 const create = async ({api, name, timeout, titleRegExp, sitemap, authorization}) => {
     const result = await pool.query(
             "INSERT INTO tasks (name, status, start, timeout, title_search_fraze, sitemap, auth) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING *",
-            [name, "start", new Date(), timeout, titleRegExp, sitemap, authorization]
+            [name, "start", new Date(), timeout, titleRegExp, JSON.stringify(sitemap), authorization]
         );
 
     return new Task({

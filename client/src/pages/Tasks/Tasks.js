@@ -41,6 +41,10 @@ const Tasks = () => {
         toggleDialog(DIALOGS.errorsDialog, {id});
     }
 
+    const openDeleteDialog = (id) => () => {
+        toggleDialog(DIALOGS.deleteDialog, {id});
+    }
+
     return (
         <Layout title='Tasks'>
             <Container maxWidth="lg" sx={{mt: 4, mb: 4}}>
@@ -74,7 +78,7 @@ const Tasks = () => {
                                             <TableCell>{formatDate(new Date(Date.parse(task.start)))}</TableCell>
                                             <TableCell>{task.name}</TableCell>
                                             <TableCell>{task.status}</TableCell>
-                                            <TableCell>{formatDate(new Date(Date.parse(task.stop)))}</TableCell>
+                                            <TableCell>{task.stop && formatDate(new Date(Date.parse(task.stop)))}</TableCell>
                                             <TableCell>{task.progress && `${task.progress} %`}</TableCell>
                                             <TableCell align='right'>
                                                 <Tooltip title="Added posts" arrow>
@@ -98,7 +102,7 @@ const Tasks = () => {
                                                     </IconButton>
                                                 </Tooltip>
                                                 <Tooltip title="Remove task" arrow>
-                                                    <IconButton size="small">
+                                                    <IconButton size="small" onClick={openDeleteDialog(task.id)}>
                                                         <DeleteIcon fontSize="inherit"/>
                                                     </IconButton>
                                                 </Tooltip>
