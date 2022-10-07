@@ -41,7 +41,7 @@ export const DialogProvider = ({children}) => {
         <CreateTaskDialog/>
         <ReportDialog {...options[DIALOGS.reportDialog]}/>
         <ErrorsDialog {...options[DIALOGS.errorsDialog]}/>
-        <DeleteDialog {...options[DIALOGS.errorsDialog]}/>
+        <DeleteDialog {...options[DIALOGS.deleteDialog]}/>
     </DialogContext.Provider>
 }
 

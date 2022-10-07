@@ -21,7 +21,7 @@ export default class Task {
         this.id = id;
         this.api = api;
         this.name = name;
-        this.start = new Date(),
+        this.start = new Date();
         this.sitemap = sitemap;
         this.timeout = timeout;
         this.titleRegExp = titleRegExp;
@@ -29,6 +29,22 @@ export default class Task {
 
         sitemap.reduce((p, url, index, arr) => p.then((prev) => {
             const {api, titleRegExp, authorization} = this;
+
+            this.progress = Math.ceil((index + 1) * 100 / sitemap.length);
+            wsServer.clients.forEach((client) => {
+                client.send(JSON.stringify({
+                    event: 'update',
+                    task: {
+                        id,
+                        name,
+                        start: this.start,
+                        status: this.status,
+                        progress: this.progress,
+                        errors: JSON.stringify(this.errors),
+                        posts: this.posts
+                    }
+                }));
+            });
 
             return updatePost({
                 api,
@@ -45,23 +61,6 @@ export default class Task {
                     this.errors.push({url, error: error.message});
                     return {error: error.message}
                 })
-                .finally(() => {
-                    this.progress = Math.ceil((index + 1) * 100 / sitemap.length);
-                    wsServer.clients.forEach((client) => {
-                        client.send(JSON.stringify({
-                            event: 'update',
-                            task: {
-                                id,
-                                name,
-                                start: this.start,
-                                status: this.status,
-                                progress: this.progress,
-                                errors: JSON.stringify(this.errors),
-                                posts: this.posts
-                            }
-                        }));
-                    });
-                })
         }), Promise.resolve()).finally(() => {
             this.status = 'complete';
             taskService.complete(this);
@@ -77,7 +76,7 @@ export default class Task {
                     }
                 }));
             });
-        })
+        });
 
         return this;
     }

@@ -55,25 +55,9 @@ const TasksProvider = ({children}) => {
     const [completed, setCompleted] = useState(0);
     const {message} = useWebsocket({url: CONFIG.WSS_URL, onOpen: () => console.log('Websocket opened')});
 
-    useEffect(() => {
-        if (message?.event === 'update') {
-            setTasks((tasks) => {
-                const index = tasks.findIndex((task) => task.id === message.task.id);
-                return index === -1
-                    ? [...tasks, message.task]
-                    : [...tasks.slice(0, index), {...tasks[index], ...message.task}, ...tasks.slice(index + 1)]
-            });
-        }
-        if(message?.task.status === 'complete'){
-            console.log('Task complete');
-            console.log(message.task);
-            setCompleted((completed) => completed + 1);
-        }
-    }, [message]);
-
-    useEffect(() => {
+    const getTasks = () => {
         setLoading(true);
-        fetch(`${CONFIG.API_URL}/api/tasks/`, {
+        return fetch(`${CONFIG.API_URL}/api/tasks/`, {
             credentials: "include",
             headers: {
                 "Content-Type": "application/json;charset=utf-8",
@@ -83,7 +67,7 @@ const TasksProvider = ({children}) => {
             .then(({data}) => setTasks(data))
             .catch((error) => console.log(error.message))
             .finally(() => setLoading(false));
-    }, []);
+    }
 
     const createTask = () =>
         fetch(`${CONFIG.API_URL}/api/tasks/`, {
@@ -103,28 +87,46 @@ const TasksProvider = ({children}) => {
                 timeout: task[TASK_FIELDS.timeout]
             })
         })
-            .then(() => {
-                console.log('task added')
-            })
+            .then(getTasks)
             .catch((error) => {
                 console.log(error)
             })
 
     const removeTask = (id) => {
-        fetch(`${CONFIG.API_URL}/api/tasks/${id}`, {
+        setLoading(true);
+
+        return fetch(`${CONFIG.API_URL}/api/tasks/${id}`, {
             method: 'DELETE'
         })
-            .then(() => {
-                console.log('task deleted')
-            })
-            .catch((error) => {
-                console.log(error)
-            })
+            .then(getTasks)
+            .then(() => console.log('Task deleted'))
+            .catch((error) => console.log(error))
+            .finally(() => setLoading(false))
     }
 
     const restartTask = (id) => {
 
     }
+
+    useEffect(() => {
+        if (message?.event === 'update') {
+            setTasks((tasks) => {
+                const index = tasks.findIndex((task) => task.id === message.task.id);
+                return index === -1
+                    ? [...tasks, message.task]
+                    : [...tasks.slice(0, index), {...tasks[index], ...message.task}, ...tasks.slice(index + 1)]
+            });
+        }
+        if(message?.task.status === 'complete'){
+            console.log('Task complete');
+            console.log(message.task);
+            setCompleted((completed) => completed + 1);
+        }
+    }, [message]);
+
+    useEffect(() => {
+        getTasks();
+    }, []);
 
     return <TasksContext.Provider value={{
         task,

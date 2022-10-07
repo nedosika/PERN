@@ -21,7 +21,7 @@ const getTaskById = async (req, res, next) => {
             return next(ApiError.BadRequest('Validation error', validation.errors))
         }
 
-        const {id} = req.body;
+        const {id} = req.params;
 
         const {rows} = await taskService.getById(id);
 
@@ -66,7 +66,7 @@ const removeTask = async (req, res, next) => {
             return next(ApiError.BadRequest('Validation error', validation.errors))
         }
 
-        const {id} = req.body;
+        const {id} = req.params;
 
         const data = await taskService.remove(id);
 

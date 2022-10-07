@@ -1,17 +1,22 @@
 import React from 'react';
 import {Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Slide} from "@mui/material";
 import {DIALOGS, useDialogContext} from "../../contexts/DialogContext";
-import useTasks from "../../hooks/useTasks";
+import {useTasksContext} from "../../contexts/TasksContext";
+import {LoadingButton} from "@mui/lab";
 
 const Transition = React.forwardRef(function Transition(props, ref) {
     return <Slide direction="up" ref={ref} {...props} />;
 });
 
-const DeleteDialog = () => {
+const DeleteDialog = ({id}) => {
+    const {removeTask, isLoading} = useTasksContext();
     const {dialogs: {[DIALOGS.deleteDialog]: isOpen}, toggleDialog} = useDialogContext();
 
     const handleClose = () =>
         toggleDialog(DIALOGS.deleteDialog);
+
+    const handleRemove = () =>
+        removeTask(id).then(() => toggleDialog(DIALOGS.deleteDialog));
 
     return (
         <Dialog
@@ -28,7 +33,7 @@ const DeleteDialog = () => {
             </DialogContent>
             <DialogActions>
                 <Button onClick={handleClose}>Disagree</Button>
-                <Button onClick={handleClose}>Agree</Button>
+                <LoadingButton loading={isLoading} onClick={handleRemove}>Agree</LoadingButton>
             </DialogActions>
         </Dialog>
     );

@@ -26,7 +26,7 @@ const create = async ({api, name, timeout, titleRegExp, sitemap, authorization})
 }
 
 const remove = (id) =>
-    pool.query("DELETE * FROM tasks WHERE id = $1", [id]);
+    pool.query("DELETE FROM tasks WHERE id = $1", [id]);
 
 const update = (name, status, stop) =>
     pool.query("UPDATE tasks SET name = $1, status = $2, stop = $3", [name, status, stop]);

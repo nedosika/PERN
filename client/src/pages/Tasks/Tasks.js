@@ -21,13 +21,13 @@ import IconButton from '@mui/material/IconButton';
 
 import Layout from "../../components/Layout";
 import {DIALOGS, useDialogContext} from "../../contexts/DialogContext";
-import useTasks from "../../hooks/useTasks";
+import {useTasksContext} from "../../contexts/TasksContext";
 
 const formatDate = (date) =>
     `${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()} ${date.getHours()}:${date.getMinutes()}`;
 
 const Tasks = () => {
-    const {tasks, isLoading} = useTasks();
+    const {tasks, isLoading} = useTasksContext();
     const {toggleDialog} = useDialogContext();
 
     const openCreateTaskDialog = () =>
