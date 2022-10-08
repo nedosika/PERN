@@ -1,4 +1,4 @@
-console.log(process.env.NODE_ENV)
+console.log(process.env)
 
 export const CONFIG = {
     NODE_ENV: process.env.NODE_ENV,
