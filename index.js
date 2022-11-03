@@ -49,18 +49,16 @@ if (config.NODE_ENV === "production") {
     app.use(express.static(path.join(__dirname, "client/build")));
 }
 
-// app.get("/tokens", async (req, res) => {
-//     try {
-//         const allTodos = await pool.query("SELECT * FROM tokens");
-//
-//         res.json(allTodos.rows);
-//     } catch (err) {
-//         console.error(err.message);
-//         res.json({
-//             error: err.message
-//         })
-//     }
-// });
+app.get("/vacations", async (req, res) => {
+    try {
+       console.log(req);
+    } catch (err) {
+        console.error(err.message);
+        res.json({
+            error: err.message
+        })
+    }
+});
 
 
 app.get("*", (req, res) => {
